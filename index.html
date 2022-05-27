@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <script type="module">
+        import * as svelte from "https://cdn.skypack.dev/svelte/compiler";
+
+        import {
+            HtmlTag,
+            SvelteComponent,
+            append,
+            append_styles,
+            attr,
+            destroy_each,
+            detach,
+            element,
+            init,
+            insert,
+            listen,
+            noop,
+            safe_not_equal,
+            set_data,
+            set_input_value,
+            set_style,
+            space,
+            text
+        } from "https://cdn.skypack.dev/svelte/internal";
+    
+        function hack(code, name) {
+            // const remove = '"svelte/internal";';
+            // var removed = code.substr(0, code.indexOf(remove) + remove.length);
+
+            // removed = removed.replace(
+            //     ,
+                
+            // );
+            
+            // console.log(
+            //     "if it does not run, you have added code which requre the import to be updated to:"
+            // );
+
+            //console.log(removed);
+
+            return code
+                //.substr(code.indexOf(remove) + remove.length, code.length)
+                .replace("svelte/internal", "https://cdn.skypack.dev/svelte/internal")
+                .replace("class Component extends SvelteComponent", `class ${name} extends SvelteComponent`)
+            //hacked += `new Component({target: document.querySelector('#app')});`;
+        }
+
+        function compile(sourceCode, name, isMain) {
+            const { js, warnings } = svelte.compile(sourceCode, 
+            {
+                customElement: false,
+                dev: false,
+                format: "esm"
+            });
+            
+            return hack(js.code, name).replace("export default Component;", isMain ? 
+            `new ${name}({target: document.querySelector('#app')});` 
+            : 
+            ``);
+        }
+
+        const Nested0 = compile(`
+            <script>
+                let name = 'world';
+            <\/script>
+            
+            <h1>Hello {name} Nested0!</h1>
+            <p>...don't affect this element</p>
+        `, `Nested0`);
+
+        // const Nested1 = compile(`
+        //     <script>
+        //         let name = 'world';
+        //     <\/script>
+            
+        //     <h1>Hello {name} Nested!</h1>
+        // `, `Nested1`);
+
+        // console.log(Nested);
+        //myEval(Nested);
+
+        const Application = compile(`
+            <style>
+                p {
+                    color: purple;
+                    font-family: 'Comic Sans MS', cursive;
+                    font-size: 2em;
+                }
+            </style>
+            
+            <h1>Hello !</h1>
+            <Nested0/>
+            <h1>bye !</h1>
+        `, `Application`, true);
+
+
+        //"abcd".substring("abcd".indexOf("cd") + 1);
+        const full = Nested0 + "\n\n" + `import {
+            create_component,
+            mount_component
+        } from "https://cdn.skypack.dev/svelte/internal";
+        ` + Application.substring(Application.indexOf("https://cdn.skypack.dev/svelte/internal") + 41).replaceAll("create_fragment", "create_fragment_1");
+        console.log(full);
+        myEval(full);
+        
+      //(hackedCode);
+
+        function myEval(content) {
+            var script = document.createElement('script');
+            script.setAttribute('type', 'module');
+            script.innerHTML = content;
+            document.body.appendChild(script);
+        }
+    </script>
+  
+    <!-- <x-foo>
+        <x-script>
+            import Nested from './Nested.svelte';
+        </x-script>
+        
+        <p>These styles...</p>
+        <Nested/>
+        
+        <style>
+            p {
+                color: purple;
+                font-family: 'Comic Sans MS', cursive;
+                font-size: 2em;
+            }
+        </style>
+    </x-foo>
+
+    <x-foo filename="Nested.svelte">
+        <p>...don't affect this element</p>
+    </x-foo>
+
+    <script>
+        const elements = document.getElementsByTagName("x-foo");
+        console.log(elements[0].innerHTML);
+        console.log(elements[1].getAttribute("filename"))
+        debugger;
+    </script> -->
+
+    <div id="app"></div>
+</body>
+</html>
