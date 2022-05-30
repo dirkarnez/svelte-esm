@@ -6,9 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/sass.js@0.11.1/dist/sass.sync.min.js"></script>
     <script type="module">
         import * as svelte from "https://cdn.skypack.dev/svelte/compiler";
+        
+        import sass from "https://cdn.skypack.dev/dart-sass";
+        // var sass = new ('path/to/sass.worker.js');
+        // debugger;
+        // // destruct/destroy/clean up a Sass instance
+        // sass.destroy();
+        const result = sass.compileString({data: `
+$font-stack: Helvetica, sans-serif;
+$primary-color: #333;
 
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+}
+`});
+        //import sveltePreprocess from "https://cdn.skypack.dev/svelte-preprocess";
+debugger;
+        //sveltePreprocess();
         import {
             HtmlTag,
             SvelteComponent,
@@ -59,7 +77,6 @@
                 dev: false,
                 format: "esm"
             });
-            
             return hack(js.code, name).replace("export default Component;", isMain ? 
             `new ${name}({target: document.querySelector('#app')});` 
             : 
@@ -103,9 +120,9 @@
 
         //"abcd".substring("abcd".indexOf("cd") + 1);
         const full = Nested0 + "\n\n" + `import {
-            create_component,
-            mount_component
-        } from "https://cdn.skypack.dev/svelte/internal";
+    create_component,
+    mount_component
+} from "https://cdn.skypack.dev/svelte/internal";
         ` + Application.substring(Application.indexOf("https://cdn.skypack.dev/svelte/internal") + 41).replaceAll("create_fragment", "create_fragment_1");
         console.log(full);
         myEval(full);
