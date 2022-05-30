@@ -4,28 +4,83 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/BrowserFS/2.0.0/browserfs.min.js" integrity="sha512-mz0EI+Ay1uIJP7rZEX8C/JlTAcHRIQ8Sny4vxmmj8MSzDJgG9NxxY2pUmOGv1lO7imFIFMyjjCzEXEywNgaUdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/sass.js@0.11.1/dist/sass.sync.min.js"></script>
-    <script type="module">
-        import * as svelte from "https://cdn.skypack.dev/svelte/compiler";
-        
-        import sass from "https://cdn.skypack.dev/dart-sass";
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sass.js@0.11.1/dist/sass.sync.min.js"></script> -->
+
+   <script type="module">
+        export default {"fs": window.fs};
+
+        // import fs from "fs";
+        // debugger;
+                    // Installs globals onto window:
+     // * Buffer
+     // * require (monkey-patches if already defined)
+     // * process
+     // You can pass in an arbitrary object if you do not wish to pollute
+     // the global namespace.
+     BrowserFS.install(window);
+
+     // Configures BrowserFS to use the LocalStorage file system.
+     BrowserFS.configure({
+         fs: "InMemory"
+     }, function(e) {
+         if (e) {
+             console.error(e);
+         }
+         console.log("BrowserFS is ready-to-use!");
+         import("https://cdn.skypack.dev/dart-sass").then(md => {
+            debugger;
+            
+        });
+         
+        debugger;
+     });
+
+        import("https://cdn.skypack.dev/svelte/compiler").then(md => {
+            debugger;
+            
+        });
+
+
+
+
+        //import sass from "https://cdn.skypack.dev/dart-sass";
         // var sass = new ('path/to/sass.worker.js');
         // debugger;
         // // destruct/destroy/clean up a Sass instance
         // sass.destroy();
-        const result = sass.compileString({data: `
-$font-stack: Helvetica, sans-serif;
-$primary-color: #333;
+//         const result = sass.compileString({data: `
+// $font-stack: Helvetica, sans-serif;
+// $primary-color: #333;
 
-body {
-  font: 100% $font-stack;
-  color: $primary-color;
-}
-`});
+// body {
+//   font: 100% $font-stack;
+//   color: $primary-color;
+// }
+// `});
+
+// const compilationResult = sass.compileString(scss, {
+//         logger: Logger.silent,
+//         alertColor: false,
+//         sourceMap: false,
+//         quietDeps: true,
+//         functions: null,
+//         sourceMapIncludeSources: false,
+//         importers: null
+
+//     });
+
+
+
+
+
+
+
         //import sveltePreprocess from "https://cdn.skypack.dev/svelte-preprocess";
-debugger;
+
         //sveltePreprocess();
         import {
             HtmlTag,
